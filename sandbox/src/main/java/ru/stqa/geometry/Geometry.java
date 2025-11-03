@@ -14,9 +14,9 @@ public class Geometry {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Square.printSquareArea(7.0);
-        Square.printSquareArea(5.0);
-        Square.printSquareArea(3.0);
+        Square.printSquareArea(new Square(7.0));
+        Square.printSquareArea(new Square(5.0));
+        Square.printSquareArea(new Square(3.0));
 
         Rectangle.printRectangleArea(3.0, 5.0);
         Rectangle.printRectangleArea(1.0, 4.0);
