@@ -1,11 +1,14 @@
 package ru.stqa.geometry.figures;
 
 public record Triangle(double a, double b, double c) {
-
-    public boolean check() {
-        return ((this.a + this.b) > this.c) && ((this.a + this.c) > this.b) && ((this.c + this.b) > this.a);
+    public Triangle{
+        if (a<0 || b<0 || c<0){
+            throw new IllegalArgumentException("Triangle side should be non-negative");
+        }
+        if ((a+b)<=c || (a+c)<=b || (b+c)<=a) {
+           throw new IllegalArgumentException("Triangle inequality is violated");
+        }
     }
-
 
     public double area() {
         var P = perimeter() / 2;
