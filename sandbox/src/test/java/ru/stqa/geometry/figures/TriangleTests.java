@@ -43,4 +43,16 @@ public class TriangleTests {
             System.out.println(exception);
         }
     }
+    @Test
+    void testEquality() {
+        var t1 = new Triangle(5.0, 4.0, 3.0);
+        var t2 = new Triangle(4.0, 3.0,5.0);
+        Assertions.assertTrue(t1.equals(t2));
+    }
+    @Test
+    void testEquality2() {
+        var t1 = new Triangle(5.0, 4.0, 3.0);
+        var t2 = new Triangle(4.0, 3.0,5.0);
+        Assertions.assertEquals(true, t1.equals(t2));
+    }
 }
