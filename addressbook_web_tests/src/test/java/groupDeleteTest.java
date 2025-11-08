@@ -44,9 +44,9 @@ public class groupDeleteTest {
         }
         if (!IsElementExist(By.name("selected[]"))) {
             driver.findElement(By.name("new")).click();
-            driver.findElement(By.name("group_name")).click();
-            driver.findElement(By.cssSelector("form:nth-child(2)")).click();
-            driver.findElement(By.name("group_name")).sendKeys("Group_name_2");
+            driver.findElement(By.xpath("//input[@name='group_name']")).click();
+            //driver.findElement(By.cssSelector("form:nth-child(2)")).click();
+            driver.findElement(By.xpath("//input[@name='group_name']")).sendKeys("Group_name_2");
             driver.findElement(By.name("group_header")).click();
             driver.findElement(By.name("group_header")).click();
             driver.findElement(By.name("group_header")).click();
@@ -56,10 +56,10 @@ public class groupDeleteTest {
             driver.findElement(By.name("group_footer")).sendKeys("Group_name_2_footer");
             driver.findElement(By.cssSelector("form:nth-child(2)")).click();
             driver.findElement(By.name("submit")).click();
-            driver.findElement(By.linkText("group page")).click();
+            driver.findElement(By.linkText("groups")).click();
         }
         driver.findElement(By.name("selected[]")).click();
         driver.findElement(By.name("delete")).click();
-        driver.findElement(By.linkText("groups")).click();
+        driver.findElement(By.linkText("home")).click();
     }
 }
