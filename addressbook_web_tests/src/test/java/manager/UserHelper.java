@@ -9,42 +9,43 @@ public class UserHelper extends HelperBase{
         super(manager);
     }
 
-    public void openUserPage() {
-        if (!manager.IsElementExist(By.name("submit"))) {
-            manager.driver.findElement(By.xpath("//a[normalize-space()='add new']")).click();
-        }
-    }
-
     public void createUser(UserData user) {
-        manager.driver.findElement(By.name("firstname")).click();
-        manager.driver.findElement(By.name("firstname")).sendKeys(user.name());
-        manager.driver.findElement(By.name("lastname")).click();
-        manager.driver.findElement(By.name("lastname")).sendKeys(user.lastname());
-        manager.driver.findElement(By.name("address")).click();
-        manager.driver.findElement(By.name("address")).sendKeys(user.address());
-        manager.driver.findElement(By.name("mobile")).click();
-        manager.driver.findElement(By.name("mobile")).sendKeys(user.mobile());
-        manager.driver.findElement(By.name("email")).click();
-        manager.driver.findElement(By.name("email")).sendKeys(user.email());
-        manager.driver.findElement(By.name("submit")).click();
-        manager.driver.findElement(By.linkText("home")).click();
-    }
-
-    public void mainPage() {
-        if (!manager.IsElementExist(By.name("Send e-Mail"))) {
-            manager.driver.findElement(By.linkText("home")).click();
-        }
+        openUserPage();
+        click(By.name("firstname"));
+        type(By.name("firstname"), user.name());
+        click(By.name("lastname"));
+        type(By.name("lastname"), user.lastname());
+        click(By.name("address"));
+        type(By.name("address"), user.address());
+        click(By.name("mobile"));
+        type(By.name("mobile"), user.mobile());
+        click(By.name("email"));
+        type(By.name("email"), user.email());
+        click(By.name("submit"));
+        click(By.linkText("home"));
     }
 
     public void delFirstUser() {
-        manager.driver.findElement(By.name("selected[]")).click();
-        manager.driver.findElement(By.name("delete")).click();
+        click(By.name("selected[]"));
+        click(By.name("delete"));
     }
 
     public void createUserIfNotExist() {
         if (!manager.IsElementExist(By.name("selected[]"))) {
-            manager.driver.findElement(By.xpath("//a[normalize-space()='add new']")).click();
+            click(By.xpath("//a[normalize-space()='add new']"));
             createUser(new UserData("Oleg", "Omelchenko", "Lenina 20", "+79998887766", "test@test.com"));
+        }
+    }
+
+    public void openUserPage() {
+        if (!manager.IsElementExist(By.name("submit"))) {
+            click(By.xpath("//a[normalize-space()='add new']"));
+        }
+    }
+
+    public void mainPage() {
+        if (!manager.IsElementExist(By.name("Send e-Mail"))) {
+            click(By.linkText("home"));
         }
     }
 }
