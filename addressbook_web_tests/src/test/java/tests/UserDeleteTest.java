@@ -6,9 +6,9 @@ public class UserDeleteTest extends TestBase {
 
     @Test
     public void delUser() {
-        app.mainPage();
-        app.createUserIfNotExist();
-        app.delFirstUser();
+        app.users().mainPage();
+        app.users().createUserIfNotExist();
+        app.users().delFirstUser();
 
     }
 
