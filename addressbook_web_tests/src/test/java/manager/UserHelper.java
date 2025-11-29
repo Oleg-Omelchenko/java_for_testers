@@ -43,6 +43,12 @@ public class UserHelper extends HelperBase{
         }
     }
 
+    public int userCount() {
+        mainPage();
+        return  manager.driver.findElements(By.name("selected[]")).size();
+    }
+
+
     public void mainPage() {
         if (!manager.IsElementExist(By.name("Send e-Mail"))) {
             click(By.linkText("home"));

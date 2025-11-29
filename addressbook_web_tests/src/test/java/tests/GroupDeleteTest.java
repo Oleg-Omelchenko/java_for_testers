@@ -15,7 +15,13 @@ public class GroupDeleteTest extends TestBase {
         app.groups().deleteGroup();
         int newGroupCount = app.groups().getCount();
         Assertions.assertEquals(groupCount - 1,newGroupCount);
-
     }
-
+    @Test
+    void canDeleteAllGroups() {
+        if (app.groups().getCount() == 0) {
+            app.groups().createGroup(new GrData("Group_name_1", "Group_header_1", "Group_footer_1"));
+        }
+        app.groups().deleteAllGroups();
+        Assertions.assertEquals(0, app.groups().getCount());
+    }
 }
