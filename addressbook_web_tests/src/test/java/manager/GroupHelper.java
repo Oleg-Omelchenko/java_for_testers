@@ -3,6 +3,10 @@ package manager;
 import model.GrData;
 import org.openqa.selenium.By;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class GroupHelper extends HelperBase {
 
     public GroupHelper(ApplicationManager manager) {
@@ -17,16 +21,16 @@ public class GroupHelper extends HelperBase {
         returnToGroupsPage();
     }
 
-    public void deleteGroup() {
+    public void deleteGroup(GrData group) {
         openGroupsPage();
-        selectGroup();
+        selectGroup(group);
         delSelectedGroups();
         returnToGroupsPage();
     }
 
-    public void modifyGroup(GrData modifiedGroup) {
+    public void modifyGroup(GrData group, GrData modifiedGroup) {
         openGroupsPage();
-        selectGroup();
+        selectGroup(group);
         startGroupModification();
         fillGroupForm(modifiedGroup);
         submitGroupModification();
@@ -63,8 +67,8 @@ public class GroupHelper extends HelperBase {
         click(By.name("edit"));
     }
 
-    private void selectGroup() {
-        click(By.name("selected[]"));
+    private void selectGroup(GrData group) {
+        click(By.cssSelector(String.format("input[value='%s']", group.id())));
     }
 
     public void openGroupsPage() {
@@ -89,5 +93,18 @@ public class GroupHelper extends HelperBase {
         for (var checkbox : checkboxes) {
             checkbox.click();
         }
+    }
+
+    public List<GrData> getList() {
+        openGroupsPage();
+        var groups = new ArrayList<GrData>();
+        var spans = manager.driver.findElements(By.cssSelector("span.group"));
+        for (var span : spans) {
+            var name = span.getText();
+            var checkbox = span.findElement(By.name("selected[]"));
+            var id = checkbox.getAttribute("value");
+            groups.add(new GrData().withId(id).withName(name));
+        }
+        return groups;
     }
 }
