@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserHelper extends HelperBase{
 
@@ -62,12 +63,9 @@ public class UserHelper extends HelperBase{
         var users = new ArrayList<UserData>();
         var rows = manager.driver.findElements(By.cssSelector("tr[name='entry']"));
         for (var row : rows) {
-            var content = row.findElement(By.name("selected[]"));
-            var id = content.getAttribute("value");
-            var rawname = row.findElement(By.cssSelector("td:nth-child(3)"));
-            var name =rawname.getText();
-            var rawlastname = row.findElement(By.cssSelector("td:nth-child(2)"));
-            var lastname =rawlastname.getText();
+            var id = row.findElement(By.name("selected[]")).getAttribute("value");
+            var name = row.findElement(By.cssSelector("td:nth-child(3)")).getText();
+            var lastname = row.findElement(By.cssSelector("td:nth-child(2)")).getText();
             users.add(new UserData().withId(id).withName(name).withLastname(lastname));
         }
         return users;
@@ -82,6 +80,19 @@ public class UserHelper extends HelperBase{
         selectUser(user);
         click(By.name("delete"));
         mainPage();
+    }
+
+    public void changeUser(UserData user, UserData changedUser) {
+        mainPage();
+        startEditUser(user);
+        type(By.name("firstname"), changedUser.name());
+        type(By.name("lastname"), changedUser.lastname());
+        click(By.name("update"));
+        mainPage();
+    }
+
+    private void startEditUser(UserData user) {
+        manager.driver.findElement(By.xpath(String.format("//a[@href='edit.php?id=%s']", user.id()))).click();
     }
 }
 
