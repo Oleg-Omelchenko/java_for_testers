@@ -25,6 +25,7 @@ public class UserHelper extends HelperBase{
         type(By.name("mobile"), user.mobile());
         click(By.name("email"));
         type(By.name("email"), user.email());
+        attach(By.name("photo"), user.photo());
         click(By.name("submit"));
         click(By.linkText("home"));
     }
@@ -37,7 +38,7 @@ public class UserHelper extends HelperBase{
     public void createUserIfNotExist() {
         if (!manager.IsElementExist(By.name("selected[]"))) {
             click(By.xpath("//a[normalize-space()='add new']"));
-            createUser(new UserData("", "Oleg", "Omelchenko", "Lenina 20", "+79998887766", "test@test.com"));
+            createUser(new UserData("", "Oleg", "Omelchenko", "Lenina 20", "+79998887766", "test@test.com",""));
         }
     }
 
@@ -87,6 +88,7 @@ public class UserHelper extends HelperBase{
         startEditUser(user);
         type(By.name("firstname"), changedUser.name());
         type(By.name("lastname"), changedUser.lastname());
+        //attach(By.name("photo"), changedUser.photo());
         click(By.name("update"));
         mainPage();
     }

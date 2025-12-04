@@ -1,8 +1,11 @@
 package tests;
 
+import common.CommonFunc;
 import manager.ApplicationManager;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class TestBase {
@@ -15,13 +18,12 @@ public class TestBase {
         }
         app.init(System.getProperty("browser","firefox"));
     }
-    public static String randomString (int n){
+
+    public static String randomFile (String dir){
+        var fileNames = new File(dir).list();
         var rnd = new Random();
-        var result = "";
-        for (int i = 0; i< n ; i++) {
-            result = result + (char)('a' + rnd.nextInt(26));
-        }
-        return result;
+        var index = rnd.nextInt(fileNames.length);
+        return Paths.get(dir,fileNames[index]).toString();
     }
 
     public static String randomMobile(int n){
@@ -36,7 +38,7 @@ public class TestBase {
     public static String randomAddress (){
         var rnd = new Random();
         var result = "";
-        result = result + randomString(10) + " ";
+        result = result + CommonFunc.randomString(10) + " ";
         for (int j = 1; j < 4 ; j++) {
                 result = result + (char)('0' + rnd.nextInt(10));
             }

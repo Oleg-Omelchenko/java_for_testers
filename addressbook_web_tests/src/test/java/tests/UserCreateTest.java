@@ -1,7 +1,9 @@
 package tests;
 
+import common.CommonFunc;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -13,10 +15,9 @@ public class UserCreateTest extends TestBase {
 
     public static List<UserData> userCreator() {
         var result = new ArrayList<UserData>(List.of(
-                new UserData(),
-                new UserData("","Oleg","Omelchenko","Lenina 20","+79998887766","test@test.com")));
+                new UserData("","Oleg","Omelchenko","Lenina 20","+79998887766","test@test.com","src/test/resources/images/avatar.png")));
         for (int i = 1; i < 5; i++) {
-            result.add(new UserData("", randomString(6), randomString(8), randomAddress(), randomMobile(11), randomEmail()));
+            result.add(new UserData("", CommonFunc.randomString(6), CommonFunc.randomString(8), randomAddress(), randomMobile(11), randomEmail(),"src/test/resources/images/avatar.png"));
         }
         return result;
     }
@@ -32,9 +33,17 @@ public class UserCreateTest extends TestBase {
         };
         newUserList.sort(compareById);
         var expectedList = new ArrayList<>(oldUserList);
-        expectedList.add(user.withId(newUserList.get(newUserList.size()-1).id()).withMobile("").withAddress("").withEmail(""));
+        expectedList.add(user.withId(newUserList.get(newUserList.size()-1).id()).withMobile("").withAddress("").withEmail("").withPhoto(""));
         expectedList.sort(compareById);
         Assertions.assertEquals(expectedList, newUserList);
         }
 
+    @Test
+    void canCreateUser() {
+        var adduser = new UserData()
+                .withName(CommonFunc.randomString(6))
+                .withLastname(CommonFunc.randomString(8))
+                .withPhoto(randomFile("src/test/resources/images"));
+        app.users().createUser(adduser);
+    }
 }
