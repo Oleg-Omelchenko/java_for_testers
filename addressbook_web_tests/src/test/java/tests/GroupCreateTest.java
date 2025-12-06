@@ -9,8 +9,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,22 +24,24 @@ public class GroupCreateTest extends TestBase {
 
     public static List<GrData> groupCreator() throws IOException {
         var result = new ArrayList<GrData>();
-//        for (var name : List.of("group name","")) {
-//            for (var header : List.of("group header","")) {
-//                for (var footer : List.of("group footer","")){
-//                    result.add(new GrData().withName(name).withHeader(header).withFooter(footer));
-//                }
-//            }
-//        }
+
+/*Читаем файл построчно, сохраняем в переменную*/
+/*
+        var json = "";
+        try (var reader = new FileReader("OOgroups.json");
+        var breader = new BufferedReader(reader)) {
+            var line = breader.readLine();
+            while (line != null) {
+                json = json + line;
+                line = breader.readLine();
+            }
+        }
+*/
+        //var json = Files.readString(Paths.get("OOgroups.json")); // читаем файл в переменную целиком
         ObjectMapper mapper = new ObjectMapper();
+        //var value = mapper.readValue(json, new TypeReference<List<GrData>>() {});
         var value = mapper.readValue(new File("OOgroups.json"), new TypeReference<List<GrData>>() {});
         result.addAll(value);
-//            for (int i =0; i<2; i++ ) {
-//            result.add(new GrData()
-//                    .withName(CommonFunc.randomString(i*3))
-//                    .withHeader(CommonFunc.randomString(i*3))
-//                    .withFooter(CommonFunc.randomString(i*3)));
-//        }
         return result;
     }
 
