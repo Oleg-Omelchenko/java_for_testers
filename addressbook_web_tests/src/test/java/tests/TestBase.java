@@ -5,18 +5,24 @@ import manager.ApplicationManager;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Random;
+import java.util.Properties;
 
 public class TestBase {
     protected static ApplicationManager app;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         if (app == null) {
+            var properties = new Properties();
+            properties.load(new FileReader(System.getProperty("target","local.properties")));
             app = new ApplicationManager();
+            app.init(System.getProperty("browser","firefox"), properties);
         }
-        app.init(System.getProperty("browser","firefox"));
     }
 
     public static String randomFile (String dir){
