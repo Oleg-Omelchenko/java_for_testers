@@ -5,7 +5,6 @@ import model.GrData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
@@ -28,7 +27,7 @@ public class GroupCreateTest extends TestBase {
 /*Читаем файл построчно, сохраняем в переменную*/
 /*
         var json = "";
-        try (var reader = new FileReader("OOgroups.json");
+        try (var reader = new FileReader("groups.json");
         var breader = new BufferedReader(reader)) {
             var line = breader.readLine();
             while (line != null) {
@@ -37,10 +36,10 @@ public class GroupCreateTest extends TestBase {
             }
         }
 */
-        //var json = Files.readString(Paths.get("OOgroups.json")); // читаем файл в переменную целиком
+        //var json = Files.readString(Paths.get("groups.json")); // читаем файл в переменную целиком
         ObjectMapper mapper = new ObjectMapper();
         //var value = mapper.readValue(json, new TypeReference<List<GrData>>() {});
-        var value = mapper.readValue(new File("OOgroups.json"), new TypeReference<List<GrData>>() {});
+        var value = mapper.readValue(new File("groups.json"), new TypeReference<List<GrData>>() {});
         result.addAll(value);
         return result;
     }

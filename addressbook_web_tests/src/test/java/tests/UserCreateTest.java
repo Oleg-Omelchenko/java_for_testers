@@ -1,24 +1,32 @@
 package tests;
 
 import common.CommonFunc;
+import model.GrData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
+import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class UserCreateTest extends TestBase {
 
-    public static List<UserData> userCreator() {
-        var result = new ArrayList<UserData>(List.of(
-                new UserData("","Oleg","Omelchenko","Lenina 20","+79998887766","test@test.com","src/test/resources/images/avatar.png")));
-        for (int i = 1; i < 5; i++) {
-            result.add(new UserData("", CommonFunc.randomString(6), CommonFunc.randomString(8), randomAddress(), randomMobile(11), randomEmail(),"src/test/resources/images/avatar.png"));
-        }
+    public static List<UserData> userCreator() throws IOException {
+        var result = new ArrayList<UserData>();
+        ObjectMapper mapper = new ObjectMapper();
+        var value = mapper.readValue(new File("users.json"), new TypeReference<List<UserData>>() {});
+        result.addAll(value);
         return result;
     }
 

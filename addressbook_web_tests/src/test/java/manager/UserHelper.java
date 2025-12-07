@@ -25,7 +25,9 @@ public class UserHelper extends HelperBase{
         type(By.name("mobile"), user.mobile());
         click(By.name("email"));
         type(By.name("email"), user.email());
-        attach(By.name("photo"), user.photo());
+        if (!"".equals(user.photo())) {
+            attach(By.name("photo"), user.photo());
+        }
         click(By.name("submit"));
         click(By.linkText("home"));
     }
