@@ -1,7 +1,6 @@
 package tests;
 
 import common.CommonFunc;
-import model.GrData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,11 +10,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,15 +28,15 @@ public class UserCreateTest extends TestBase {
     @ParameterizedTest
     @MethodSource("userCreator")
     public void canCreateMultipleUser(UserData user) {
-        var oldUserList = app.users().getUserList();
+        var oldUserList = app.jdbc().getUserListFromDB();
         app.users().createUser(user);
-        var newUserList = app.users().getUserList();
+        var newUserList = app.jdbc().getUserListFromDB();
         Comparator<UserData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
         };
         newUserList.sort(compareById);
         var expectedList = new ArrayList<>(oldUserList);
-        expectedList.add(user.withId(newUserList.get(newUserList.size()-1).id()).withMobile("").withAddress("").withEmail("").withPhoto(""));
+        expectedList.add(user.withId(newUserList.get(newUserList.size()-1).id()));
         expectedList.sort(compareById);
         Assertions.assertEquals(expectedList, newUserList);
         }

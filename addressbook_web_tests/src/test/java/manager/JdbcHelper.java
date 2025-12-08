@@ -1,6 +1,7 @@
 package manager;
 
 import model.GrData;
+import model.UserData;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class JdbcHelper extends HelperBase {
         super(manager);
     }
 
-    public List<GrData> getGroupList() {
+    public List<GrData> getGroupListFromDB() {
         var groups = new ArrayList<GrData>();
         try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root","");
              var statement = connect.createStatement();
@@ -32,7 +33,7 @@ public class JdbcHelper extends HelperBase {
         return groups;
     }
 
-    public int countGroup() {
+    public int countGroupsFromDB() {
         int count;
         try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
              var statement = connect.createStatement();
@@ -48,4 +49,43 @@ public class JdbcHelper extends HelperBase {
         }
         return count;
     }
+
+    public List<UserData> getUserListFromDB() {
+        var users = new ArrayList<UserData>();
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root","");
+             var statement = connect.createStatement();
+             var  result = statement.executeQuery("SELECT id, firstname, lastname, address, mobile, email FROM addressbook"))
+        {
+            while (result.next()) {
+                users.add(new UserData().withId(result.getString("id"))
+                        .withName(result.getString("firstname"))
+                        .withLastname(result.getString("lastname"))
+                        .withAddress(result.getString("address"))
+                        .withMobile(result.getString("mobile"))
+                        .withEmail(result.getString("email")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
+    }
+
+    public int countUsersFromDB() {
+        int count;
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
+             var statement = connect.createStatement();
+             var result = statement.executeQuery("SELECT count(*) FROM addressbook"))
+        {
+            if (result.next()) {
+                count = result.getInt(1);
+            } else {
+                count = 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return count;
+    }
+
+
 }

@@ -53,9 +53,9 @@ public class GroupCreateTest extends TestBase {
     @ParameterizedTest
     @MethodSource("groupCreator")
     public void canCreateGroup(GrData group) {
-        var oldGroups = app.jdbc().getGroupList();
+        var oldGroups = app.jdbc().getGroupListFromDB();
         app.groups().createGroup(group);
-        var newGroups = app.jdbc().getGroupList();
+        var newGroups = app.jdbc().getGroupListFromDB();
         Comparator<GrData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
         };
@@ -69,7 +69,7 @@ public class GroupCreateTest extends TestBase {
 
     @Test
     void CompareUiAndDatabase() {
-        var newGroups = app.jdbc().getGroupList();
+        var newGroups = app.jdbc().getGroupListFromDB();
         var changeNewGroups = new ArrayList<GrData>();
         Comparator<GrData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
@@ -94,9 +94,9 @@ public class GroupCreateTest extends TestBase {
     @ParameterizedTest
     @MethodSource("negativeGroupCreator")
     public void canNotCreateGroup(GrData group) {
-        var oldGroups = app.jdbc().getGroupList();
+        var oldGroups = app.jdbc().getGroupListFromDB();
         app.groups().createGroup(group);
-        var newGroups = app.jdbc().getGroupList();
+        var newGroups = app.jdbc().getGroupListFromDB();
         Assertions.assertEquals(oldGroups, newGroups);
     }
 }

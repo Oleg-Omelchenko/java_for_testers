@@ -11,12 +11,15 @@ public class UserChangeTests extends TestBase {
     @Test
     void canModifyUser() {
         app.users().createUserIfNotExist();
-        var oldUsers = app.users().getUserList();
+        if (app.jdbc().countUsersFromDB() == 0) {
+            app.users().createUser(new UserData("", "Oleg", "Omelchenko", "Lenina 20", "+79998887766", "test@test.com",""));
+        }
+        var oldUsers = app.jdbc().getUserListFromDB();
         var rnd = new Random();
         var index = rnd.nextInt(oldUsers.size());
         var testData= new UserData().withName("James").withLastname("Bond");
         app.users().changeUser(oldUsers.get(index), testData);
-        var newUsers = app.users().getUserList();
+        var newUsers = app.jdbc().getUserListFromDB();
         var expectedList = new ArrayList<>(oldUsers);
         expectedList.set(index, testData.withId(oldUsers.get(index).id()).withName("James").withLastname("Bond"));
         Comparator<UserData> compareById = (o1, o2) -> {

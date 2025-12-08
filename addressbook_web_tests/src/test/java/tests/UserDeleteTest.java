@@ -14,11 +14,11 @@ public class UserDeleteTest extends TestBase {
     public void delUser() {
         app.users().mainPage();
         app.users().createUserIfNotExist();
-        var oldUsers = app.users().getUserList();
+        var oldUsers = app.jdbc().getUserListFromDB();
         var rnd = new Random();
         var index = rnd.nextInt(oldUsers.size());
         app.users().deleteUser(oldUsers.get(index));
-        var newUsers = app.users().getUserList();
+        var newUsers = app.jdbc().getUserListFromDB();
         Comparator<UserData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
         };
