@@ -16,7 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static tests.TestBase.randomFile;
+/*--type groups --output groups.json --format json --count 5*/
 
 public class Generator {
     @Parameter(names={"--type", "-t"})

@@ -51,7 +51,7 @@ public class GroupCreateTest extends TestBase {
 
 
     @ParameterizedTest
-    @MethodSource("singleRandomGroup")
+    @MethodSource("groupCreator")
     public void canCreateGroup(GrData group) {
         var oldGroups = app.jdbc().getGroupList();
         app.groups().createGroup(group);
@@ -94,9 +94,9 @@ public class GroupCreateTest extends TestBase {
     @ParameterizedTest
     @MethodSource("negativeGroupCreator")
     public void canNotCreateGroup(GrData group) {
-        var oldGroups = app.groups().getList();
+        var oldGroups = app.jdbc().getGroupList();
         app.groups().createGroup(group);
-        var newGroups = app.groups().getList();
+        var newGroups = app.jdbc().getGroupList();
         Assertions.assertEquals(oldGroups, newGroups);
     }
 }

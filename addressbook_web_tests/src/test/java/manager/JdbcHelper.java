@@ -1,7 +1,6 @@
 package manager;
 
 import model.GrData;
-import org.openqa.selenium.devtools.v140.page.model.CrossOriginIsolatedContextType;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,5 +30,22 @@ public class JdbcHelper extends HelperBase {
             throw new RuntimeException(e);
         }
         return groups;
+    }
+
+    public int countGroup() {
+        int count;
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
+             var statement = connect.createStatement();
+             var result = statement.executeQuery("SELECT count(*) FROM group_list"))
+        {
+            if (result.next()) {
+                count = result.getInt(1);
+            } else {
+                count = 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return count;
     }
 }
