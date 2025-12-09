@@ -12,9 +12,7 @@ public class GroupChangeTests extends TestBase {
 
     @Test
     void canModifyGroup() {
-        if (app.jdbc().countGroupsFromDB() == 0) {
-            app.groups().createGroup(new GrData("", "Group_name_1", "Group_header_1", "Group_footer_1"));
-        }
+        app.groups().createGroupIfNotExist();
         var oldGroups = app.jdbc().getGroupListFromDB();
         var rnd = new Random();
         var index = rnd.nextInt(oldGroups.size());

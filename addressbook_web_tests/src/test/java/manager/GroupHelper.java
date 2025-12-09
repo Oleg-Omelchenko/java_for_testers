@@ -1,6 +1,7 @@
 package manager;
 
 import model.GrData;
+import model.UserData;
 import org.openqa.selenium.By;
 
 import java.sql.Array;
@@ -94,6 +95,14 @@ public class GroupHelper extends HelperBase {
             checkbox.click();
         }
     }
+
+    public void createGroupIfNotExist() {
+        openGroupsPage();
+        if (!manager.IsElementExist(By.cssSelector("span.group"))) {
+            createGroup(new GrData("", "Group_name_1", "Group_header_1", "Group_footer_1"));
+        }
+    }
+
 
     public List<GrData> getList() {
         openGroupsPage();

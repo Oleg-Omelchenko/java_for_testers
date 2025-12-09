@@ -1,7 +1,10 @@
 package manager;
 
+import model.GrData;
 import model.UserData;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +35,13 @@ public class UserHelper extends HelperBase{
         click(By.linkText("home"));
     }
 
-    public void delFirstUser() {
-        click(By.name("selected[]"));
-        click(By.name("delete"));
+    public void moveUserToGroup(UserData user, String groupId) {
+        selectUser(user);
+        WebElement dropdown = manager.driver.findElement(By.name("to_group"));
+        Select select = new Select(dropdown);
+        select.selectByValue(groupId);
+        click(By.name("add"));
+        click(By.linkText("home"));
     }
 
     public void createUserIfNotExist() {

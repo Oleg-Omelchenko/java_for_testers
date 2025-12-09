@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JdbcHelper extends HelperBase {
 
@@ -68,6 +69,23 @@ public class JdbcHelper extends HelperBase {
             throw new RuntimeException(e);
         }
         return users;
+    }
+
+    public List<String> getAvailableGroupsForUser(String userId) {
+        List<String> userGroups = new ArrayList<>();
+        List<String> availableGroups = getGroupListFromDB().stream().map(GrData::id).collect(Collectors.toList());
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
+             var statement = connect.createStatement();
+             var result = statement.executeQuery(String.format("SELECT group_id FROM address_in_groups WHERE id=%s", userId))) {
+            while (result.next()) {
+                userGroups.add(result.getString("group_id"));
+            }
+            availableGroups.removeAll(userGroups);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return availableGroups;
     }
 
     public int countUsersFromDB() {
