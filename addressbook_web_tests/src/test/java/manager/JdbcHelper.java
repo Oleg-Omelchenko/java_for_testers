@@ -105,5 +105,42 @@ public class JdbcHelper extends HelperBase {
         return count;
     }
 
+    public int countLinks() {
+        int count;
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
+             var statement = connect.createStatement();
+             var result = statement.executeQuery("SELECT count(*) FROM address_in_groups"))
+        {
+            if (result.next()) {
+                count = result.getInt(1);
+            } else {
+                count = 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return count;
+    }
+
+    public List<List<String>> getGroupUserLinks() {
+        List<List<String>> links = new ArrayList<>();
+        try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root","");
+             var statement = connect.createStatement();
+             var  result = statement.executeQuery("SELECT group_id, id FROM address_in_groups"))
+        {
+            while (result.next()) {
+                List<String> row = new ArrayList<>();
+                row.add(result.getString("group_id"));
+                row.add(result.getString("id"));
+                links.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return links;
+    }
+
+
+
 
 }

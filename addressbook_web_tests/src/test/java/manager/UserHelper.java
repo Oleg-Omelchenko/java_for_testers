@@ -1,6 +1,5 @@
 package manager;
 
-import model.GrData;
 import model.UserData;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,7 +7,6 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class UserHelper extends HelperBase{
 
@@ -17,7 +15,7 @@ public class UserHelper extends HelperBase{
     }
 
     public void createUser(UserData user) {
-        openUserPage();
+        createUserPage();
         click(By.name("firstname"));
         type(By.name("firstname"), user.name());
         click(By.name("lastname"));
@@ -44,6 +42,16 @@ public class UserHelper extends HelperBase{
         click(By.linkText("home"));
     }
 
+    public void removeUserFromGroup(UserData user, String groupId) {
+        mainPage();
+        WebElement dropdown = manager.driver.findElement(By.name("group"));
+        Select select = new Select(dropdown);
+        select.selectByValue(groupId);
+        selectUser(user);
+        click(By.name("remove"));
+        click(By.linkText("home"));
+    }
+
     public void createUserIfNotExist() {
         if (!manager.IsElementExist(By.name("selected[]"))) {
             click(By.xpath("//a[normalize-space()='add new']"));
@@ -51,7 +59,7 @@ public class UserHelper extends HelperBase{
         }
     }
 
-    public void openUserPage() {
+    public void createUserPage() {
         if (!manager.IsElementExist(By.name("submit"))) {
             click(By.xpath("//a[normalize-space()='add new']"));
         }
