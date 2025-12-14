@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 
 public class GroupCreateTest extends TestBase {
@@ -41,15 +43,6 @@ public class GroupCreateTest extends TestBase {
         return result;
     }
 
-    public static List<GrData> singleRandomGroup() {
-        return List.of(new GrData()
-                .withName(CommonFunc.randomString(6))
-                .withHeader(CommonFunc.randomString(9))
-                .withFooter(CommonFunc.randomString(12)));
-    }
-
-
-
     @ParameterizedTest
     @MethodSource("groupCreator")
     public void canCreateGroup(GrData group) {
@@ -66,6 +59,41 @@ public class GroupCreateTest extends TestBase {
         expectedList.sort(compareById);
         Assertions.assertEquals(expectedList, newGroups);
     }
+
+
+    public static Stream<GrData> singleRandomGroup() {
+        Supplier<GrData> randomGroup = () -> new GrData()
+                .withName(CommonFunc.randomString(6))
+                .withHeader(CommonFunc.randomString(9))
+                .withFooter(CommonFunc.randomString(12));
+        return Stream.generate(randomGroup).limit(3);
+    }
+
+    @ParameterizedTest
+    @MethodSource("singleRandomGroup")
+    public void createRandomGroup(GrData group) {
+        var oldGroups = app.hbm().getGroupList();
+        app.groups().createGroup(group);
+        var newGroups = app.hbm().getGroupList();
+        Comparator<GrData> compareById = (o1, o2) -> {
+            return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
+        };
+        newGroups.sort(compareById);
+        var maxId = newGroups.get(newGroups.size()-1).id();
+        var expectedList = new ArrayList<>(oldGroups);
+        expectedList.add(group.withId(maxId));
+        expectedList.sort(compareById);
+        Assertions.assertEquals(expectedList, newGroups);
+    }
+
+
+
+
+
+
+
+
+
 
     @Test
     void CompareUiAndDatabase() {

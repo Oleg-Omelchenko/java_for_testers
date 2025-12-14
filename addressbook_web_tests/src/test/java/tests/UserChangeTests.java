@@ -45,26 +45,19 @@ public class UserChangeTests extends TestBase {
             app.groups().createGroup(new GrData("", CommonFunc.randomString(6), CommonFunc.randomString(8), CommonFunc.randomString(10)));
             app.users().mainPage();
         }
-        var userList = app.jdbc().getUserListFromDB();
-        for (var i = 0; i < app.jdbc().countUsersFromDB(); i++) {
-            var availableGroup = app.jdbc().getAvailableGroupsForUser(userList.get(i).id());
-            if (!availableGroup.isEmpty()) {
-                var expectedList = new ArrayList<>(availableGroup);
-                var rndGroup = new Random();
-                var indexGroup = rndGroup.nextInt(availableGroup.size());
-                app.users().moveUserToGroup(userList.get(i), availableGroup.get(indexGroup));
-                expectedList.remove(indexGroup);
-                var newAvailableGroup = app.jdbc().getAvailableGroupsForUser(userList.get(i).id());
-                Comparator<String> compareById = (o1, o2) -> {
-                    return Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
-                };
-                newAvailableGroup.sort(compareById);
-                expectedList.sort(compareById);
-                Assertions.assertEquals(newAvailableGroup, expectedList);
-                return;
+        var userAndGroupForAdd = app.jdbc().checkUsers();
+        var oldList = app.jdbc().getAvailableGroupsForUser((UserData) userAndGroupForAdd.get(0));
+        app.users().moveUserToGroup((UserData) userAndGroupForAdd.get(0), (String) userAndGroupForAdd.get(1));
+        var newList = app.jdbc().getAvailableGroupsForUser((UserData) userAndGroupForAdd.get(0));
+        var expectedList = new ArrayList<>(oldList);
+        expectedList.remove(userAndGroupForAdd.get(1));
+        Comparator<String> compareById = (o1, o2) -> {
+            return Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
+        };
+        newList.sort(compareById);
+        expectedList.sort(compareById);
+        Assertions.assertEquals(newList, expectedList);
             }
-        }
-    }
 
     @Test
     void removeUserFromGroup() {
@@ -76,18 +69,13 @@ public class UserChangeTests extends TestBase {
         }
         List<UserData> userList = app.jdbc().getUserListFromDB();
         if (app.jdbc().countLinks() == 0) {
-            var availableGroup = app.jdbc().getAvailableGroupsForUser(userList.getFirst().id());
+            var availableGroup = app.jdbc().getAvailableGroupsForUser(userList.getFirst());
                 app.users().moveUserToGroup(userList.getFirst(),availableGroup.getFirst());
         }
         var links = app.jdbc().getGroupUserLinks();
         var rndLink = new Random();
         var indexLink = rndLink.nextInt(links.size());
-        for (UserData user : userList) {
-            if (user.id().equals(links.get(indexLink).get(1))) {
-                app.users().removeUserFromGroup(user, links.get(indexLink).get(0));
-                break;
-            }
-        }
+        app.users().removeUserFromGroup(links.get(indexLink).get(1), links.get(indexLink).get(0));
         var newLinks = app.jdbc().getGroupUserLinks();
         var expectedLinks = new ArrayList<>(links);
         expectedLinks.remove(indexLink);

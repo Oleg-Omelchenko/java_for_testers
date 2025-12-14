@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*--type groups --output groups.json --format json --count 5*/
 
@@ -50,25 +53,21 @@ public class Generator {
         }
     }
 
+    private Object generateData(Supplier<Object> dataSupplier) {
+        return Stream.generate(dataSupplier).limit(count).collect(Collectors.toList());
+    }
+
     private Object generateGroups() {
-        var result = new ArrayList<GrData>();
-        for (int i =0; i<count; i++ ) {
-            result.add(new GrData()
-                    .withName(CommonFunc.randomString(i*3))
-                    .withHeader(CommonFunc.randomString(i*3))
-                    .withFooter(CommonFunc.randomString(i*3)));
-        }
-        return result;
+        return generateData(() -> new GrData()
+                .withName(CommonFunc.randomString(6))
+                .withHeader(CommonFunc.randomString(8))
+                .withFooter(CommonFunc.randomString(8)));
     }
 
     private Object generateUsers() {
-        var result = new ArrayList<UserData>();
-        for (int i =0; i<count; i++ ) {
-            result.add(new UserData()
-                    .withName(CommonFunc.randomString(6))
-                    .withLastname(CommonFunc.randomString(8)));
-        }
-        return result;
+        return generateData(() -> new UserData()
+                .withName(CommonFunc.randomString(6))
+                .withLastname(CommonFunc.randomString(8)));
     }
 
     private void save(Object data) throws IOException {

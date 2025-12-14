@@ -34,7 +34,7 @@ public class UserHelper extends HelperBase{
     }
 
     public void moveUserToGroup(UserData user, String groupId) {
-        selectUser(user);
+        selectUser(user.id());
         WebElement dropdown = manager.driver.findElement(By.name("to_group"));
         Select select = new Select(dropdown);
         select.selectByValue(groupId);
@@ -42,12 +42,12 @@ public class UserHelper extends HelperBase{
         click(By.linkText("home"));
     }
 
-    public void removeUserFromGroup(UserData user, String groupId) {
+    public void removeUserFromGroup(String userId, String groupId) {
         mainPage();
         WebElement dropdown = manager.driver.findElement(By.name("group"));
         Select select = new Select(dropdown);
         select.selectByValue(groupId);
-        selectUser(user);
+        selectUser(userId);
         click(By.name("remove"));
         click(By.linkText("home"));
     }
@@ -89,13 +89,13 @@ public class UserHelper extends HelperBase{
         return users;
     }
 
-    private void selectUser(UserData user) {
-        click(By.cssSelector(String.format("input[value='%s']", user.id())));
+    private void selectUser(String userId) {
+        click(By.cssSelector(String.format("input[value='%s']", userId)));
     }
 
     public void deleteUser(UserData user) {
         mainPage();
-        selectUser(user);
+        selectUser(user.id());
         click(By.name("delete"));
         mainPage();
     }

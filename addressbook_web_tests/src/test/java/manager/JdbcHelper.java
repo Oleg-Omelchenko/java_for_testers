@@ -71,12 +71,12 @@ public class JdbcHelper extends HelperBase {
         return users;
     }
 
-    public List<String> getAvailableGroupsForUser(String userId) {
+    public List<String> getAvailableGroupsForUser(UserData user) {
         List<String> userGroups = new ArrayList<>();
         List<String> availableGroups = getGroupListFromDB().stream().map(GrData::id).collect(Collectors.toList());
         try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root", "");
              var statement = connect.createStatement();
-             var result = statement.executeQuery(String.format("SELECT group_id FROM address_in_groups WHERE id=%s", userId))) {
+             var result = statement.executeQuery(String.format("SELECT group_id FROM address_in_groups WHERE id=%s", user.id()))) {
             while (result.next()) {
                 userGroups.add(result.getString("group_id"));
             }
@@ -140,7 +140,16 @@ public class JdbcHelper extends HelperBase {
         return links;
     }
 
-
-
-
+    public ArrayList<Object> checkUsers() {
+        var userList = getUserListFromDB();
+        var pair = new ArrayList<>();
+        for (UserData user : userList) {
+            var availableGroup = getAvailableGroupsForUser(user);
+            if (!availableGroup.isEmpty()) {
+                pair.add(user);
+                pair.add(availableGroup.getFirst());
+            }
+        }
+        return pair;
+    }
 }
