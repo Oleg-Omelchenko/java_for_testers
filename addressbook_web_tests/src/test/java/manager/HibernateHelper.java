@@ -1,44 +1,72 @@
 package manager;
 
 import manager.hbm.GroupRecord;
+import manager.hbm.UserRecord;
 import model.GrData;
+import model.UserData;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.tool.schema.Action;
+import org.hibernate.cfg.JdbcSettings;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class HibernateHelper extends HelperBase{
-
+public class HibernateHelper extends HelperBase {
     private SessionFactory sessionFactory;
 
     public HibernateHelper(ApplicationManager manager) {
         super(manager);
-        sessionFactory = new Configuration()
-                //.addAnnotatedClass(Book.class)
-                .addAnnotatedClass(GroupRecord.class)
-                .setProperty(AvailableSettings.URL, "jdbc:mysql://localhost/addressbook")
-                .setProperty(AvailableSettings.USER, "root")
-                .setProperty(AvailableSettings.PASS, "")
-                .buildSessionFactory();
-    }
 
-    static List<GrData> converList(List<GroupRecord> records) {
-        List<GrData> result = new ArrayList<>();
-        for (var record : records) {
-            result.add(convert(record));
+        Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(UserRecord.class);
+        configuration.addAnnotatedClass(GroupRecord.class);
+        String url = "jdbc:mysql://localhost/addressbook" +
+                "?zeroDateTimeBehavior=CONVERT_TO_NULL" +
+                "&sslMode=DISABLED";
+        configuration.setProperty(JdbcSettings.JAKARTA_JDBC_URL, url);
+        configuration.setProperty(JdbcSettings.JAKARTA_JDBC_USER, "root");
+        configuration.setProperty(JdbcSettings.JAKARTA_JDBC_PASSWORD, "");
+        configuration.setProperty(JdbcSettings.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+
+        try {
+            sessionFactory = configuration.buildSessionFactory(registry);
+        } catch (Exception e) {
+            StandardServiceRegistryBuilder.destroy(registry);
+            throw e;
         }
-        return result;
+    }
+    static List<GrData> convertGroupList(List<GroupRecord> records) {
+        return records.stream().map(HibernateHelper::convertGroup).collect(Collectors.toList());
+        }
+
+    static List<UserData> convertUserList(List<UserRecord> records) {
+        return records.stream().map(HibernateHelper::convertUser).collect(Collectors.toList());
     }
 
-    private static GrData convert(GroupRecord record) {
+    private static UserData convertUser(UserRecord record) {
+        return new UserData("" + record.id, record.firstname, record.middlename, record.lastname, record.address, record.home, record.work, record.mobile, record.email, record.email2, record.email3, record.photo);
+    }
+
+    private static UserRecord convertUser(UserData userData) {
+        var id = userData.id();
+        if ("".equals(id)) {
+            id = "0";
+        }
+        return new UserRecord(Integer.parseInt(id), userData.name(),userData.middlename(), userData.lastname(), userData.address(), userData.home(),userData.work(),userData.mobile(),userData.email(),userData.email2(),userData.email3(),userData.photo());
+    }
+
+
+    private static GrData convertGroup(GroupRecord record) {
         return new GrData("" + record.id, record.name, record.header, record.footer);
     }
 
-    private static GroupRecord convert(GrData grData) {
+    private static GroupRecord convertGroup(GrData grData) {
         var id = grData.id();
         if ("".equals(id)) {
             id = "0";
@@ -47,23 +75,50 @@ public class HibernateHelper extends HelperBase{
     }
 
     public List<GrData> getGroupList() {
-        return converList(sessionFactory.fromSession(session -> {
-            return session.createQuery("from GroupRecord", GroupRecord.class).list();
-        }));
+        try (Session session = sessionFactory.openSession()) {
+            return convertGroupList(session.createSelectionQuery("from GroupRecord", GroupRecord.class)
+                    .getResultList());
+        }
     }
 
+    public List<UserData> getUserList() {
+        try (Session session = sessionFactory.openSession()) {
+            return convertUserList(session.createSelectionQuery("from UserRecord", UserRecord.class)
+                    .getResultList());
+        }
+    }
 
     public long getGroupCount() {
-        return sessionFactory.fromSession(session -> {
-            return session.createQuery("select count (*) from GroupRecord", long.class).getSingleResult();
-        });
+        try (Session session = sessionFactory.openSession()) {
+            return session.createSelectionQuery("select count(g) from GroupRecord g", Long.class)
+                    .getSingleResult();
+        }
+    }
+
+    public long getUserCount() {
+        try (Session session = sessionFactory.openSession()) {
+            return session.createSelectionQuery("select count(u) from UserRecord u", Long.class)
+                    .getSingleResult();
+        }
     }
 
     public void createGroup(GrData grData) {
         sessionFactory.inSession(session -> {
-            session.getTransaction().begin();
-            session.persist(convert(grData));
+            session.beginTransaction();
+            session.persist(convertGroup(grData));
             session.getTransaction().commit();
         });
     }
+
+    public void createUser(UserData userData) {
+        sessionFactory.inSession(session -> {
+            session.beginTransaction();
+            session.persist(convertUser(userData));
+            session.getTransaction().commit();
+        });
+    }
+
+
+
+
 }

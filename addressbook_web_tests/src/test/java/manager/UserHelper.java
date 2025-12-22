@@ -18,14 +18,26 @@ public class UserHelper extends HelperBase{
         createUserPage();
         click(By.name("firstname"));
         type(By.name("firstname"), user.name());
+        click(By.name("middlename"));
+        type(By.name("middlename"), user.middlename());
         click(By.name("lastname"));
         type(By.name("lastname"), user.lastname());
         click(By.name("address"));
         type(By.name("address"), user.address());
+        click(By.name("home"));
+        type(By.name("home"), user.home());
+        click(By.name("home"));
+        type(By.name("home"), user.home());
         click(By.name("mobile"));
         type(By.name("mobile"), user.mobile());
+        click(By.name("work"));
+        type(By.name("work"), user.work());
         click(By.name("email"));
         type(By.name("email"), user.email());
+        click(By.name("email2"));
+        type(By.name("email2"), user.email2());
+        click(By.name("email3"));
+        type(By.name("email3"), user.email3());
         if (!"".equals(user.photo())) {
             attach(By.name("photo"), user.photo());
         }
@@ -55,7 +67,7 @@ public class UserHelper extends HelperBase{
     public void createUserIfNotExist() {
         if (!manager.IsElementExist(By.name("selected[]"))) {
             click(By.xpath("//a[normalize-space()='add new']"));
-            createUser(new UserData("", "Oleg", "Omelchenko", "Lenina 20", "+79998887766", "test@test.com",""));
+            createUser(new UserData("", "Oleg","","Omelchenko", "Lenina 20","","","+79998887766","test@test.com","","",""));
         }
     }
 
@@ -112,6 +124,14 @@ public class UserHelper extends HelperBase{
 
     private void startEditUser(UserData user) {
         manager.driver.findElement(By.xpath(String.format("//a[@href='edit.php?id=%s']", user.id()))).click();
+    }
+
+    public String getPhones(UserData user) {
+        return manager.driver.findElement(By.xpath(String.format("//input[@id=%s]/../../td[6]", user.id()))).getText();
+    }
+
+    public String getEmails(UserData user) {
+        return manager.driver.findElement(By.xpath(String.format("//input[@id=%s]/../../td[5]", user.id()))).getText();
     }
 }
 

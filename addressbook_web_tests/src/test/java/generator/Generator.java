@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/*--type groups --output groups.json --format json --count 5*/
+/*--type groups --output users.json --format json --count 5*/
 
 public class Generator {
     @Parameter(names={"--type", "-t"})
@@ -67,7 +67,15 @@ public class Generator {
     private Object generateUsers() {
         return generateData(() -> new UserData()
                 .withName(CommonFunc.randomString(6))
-                .withLastname(CommonFunc.randomString(8)));
+                .withMiddlename(CommonFunc.randomString(7))
+                .withLastname(CommonFunc.randomString(8))
+                .withAddress(CommonFunc.randomString(8) + " " + CommonFunc.randomString(3))
+                .withHome(CommonFunc.randomPhone())
+                .withWork(CommonFunc.randomPhone())
+                .withMobile(CommonFunc.randomPhone())
+                .withEmail(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2))
+                .withEmail2(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2))
+                .withEmail3(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2)));
     }
 
     private void save(Object data) throws IOException {

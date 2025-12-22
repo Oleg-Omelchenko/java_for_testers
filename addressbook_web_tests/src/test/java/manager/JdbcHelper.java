@@ -55,15 +55,21 @@ public class JdbcHelper extends HelperBase {
         var users = new ArrayList<UserData>();
         try (var connect = DriverManager.getConnection("jdbc:mysql://localhost/addressbook", "root","");
              var statement = connect.createStatement();
-             var  result = statement.executeQuery("SELECT id, firstname, lastname, address, mobile, email FROM addressbook"))
+             var  result = statement.executeQuery("SELECT id, firstname, middlename, lastname, address,  home,  work, mobile,  email,  email2,  email3,  photo FROM addressbook"))
         {
             while (result.next()) {
                 users.add(new UserData().withId(result.getString("id"))
                         .withName(result.getString("firstname"))
+                        .withMiddlename(result.getString("middlename"))
                         .withLastname(result.getString("lastname"))
                         .withAddress(result.getString("address"))
+                        .withHome(result.getString("home"))
+                        .withWork(result.getString("work"))
                         .withMobile(result.getString("mobile"))
-                        .withEmail(result.getString("email")));
+                        .withEmail(result.getString("email"))
+                        .withEmail2(result.getString("email2"))
+                        .withEmail3(result.getString("email3"))
+                        .withPhoto(result.getString("photo")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

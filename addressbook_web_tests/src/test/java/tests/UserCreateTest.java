@@ -1,6 +1,7 @@
 package tests;
 
 import common.CommonFunc;
+import model.GrData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class UserCreateTest extends TestBase {
 
@@ -25,12 +28,29 @@ public class UserCreateTest extends TestBase {
         return result;
     }
 
+
+    public static Stream<UserData> randomUser() {
+        Supplier<UserData> rndUser = () -> new UserData()
+                .withName(CommonFunc.randomString(6))
+                .withMiddlename(CommonFunc.randomString(7))
+                .withLastname(CommonFunc.randomString(8))
+                .withAddress(CommonFunc.randomString(8) + " " + CommonFunc.randomString(3))
+                .withHome(CommonFunc.randomPhone())
+                .withWork(CommonFunc.randomPhone())
+                .withMobile(CommonFunc.randomPhone())
+                .withEmail(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2))
+                .withEmail2(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2))
+                .withEmail3(CommonFunc.randomString(7) + "@" + CommonFunc.randomString(5) + "." + CommonFunc.randomString(2));
+        return Stream.generate(rndUser).limit(5);
+    }
+
+
     @ParameterizedTest
-    @MethodSource("userCreator")
+    @MethodSource("randomUser")
     public void canCreateMultipleUser(UserData user) {
-        var oldUserList = app.jdbc().getUserListFromDB();
+        var oldUserList = app.hbm().getUserList();
         app.users().createUser(user);
-        var newUserList = app.jdbc().getUserListFromDB();
+        var newUserList = app.hbm().getUserList();
         Comparator<UserData> compareById = (o1, o2) -> {
             return Integer.compare(Integer.parseInt(o1.id()), Integer.parseInt(o2.id()));
         };

@@ -19,7 +19,7 @@ public class GroupRecord {
     public String header;
     @Column(name="group_footer")
     public String footer;
-
+    @Column(name="deprecated")
     public Date deprecated = new Date();
 
 
