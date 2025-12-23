@@ -7,6 +7,8 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserHelper extends HelperBase{
 
@@ -126,12 +128,47 @@ public class UserHelper extends HelperBase{
         manager.driver.findElement(By.xpath(String.format("//a[@href='edit.php?id=%s']", user.id()))).click();
     }
 
-    public String getPhones(UserData user) {
+    public String getPhonesFromMain(UserData user) {
         return manager.driver.findElement(By.xpath(String.format("//input[@id=%s]/../../td[6]", user.id()))).getText();
     }
 
-    public String getEmails(UserData user) {
+    public String getEmailsFromMain(UserData user) {
         return manager.driver.findElement(By.xpath(String.format("//input[@id=%s]/../../td[5]", user.id()))).getText();
+    }
+
+    public String getAddressFromMain(UserData user) {
+        return manager.driver.findElement(By.xpath(String.format("//input[@id=%s]/../../td[4]", user.id()))).getText();
+    }
+
+    public String getPhonesFromModify(UserData user) {
+        mainPage();
+        startEditUser(user);
+        var home = manager.driver.findElement(By.name("home")).getAttribute("value");
+        var mobile = manager.driver.findElement(By.name("mobile")).getAttribute("value");
+        var work = manager.driver.findElement(By.name("work")).getAttribute("value");
+        var result = Stream.of(home, mobile, work)
+                .filter(s -> s != null && ! "".equals(s))
+                .collect(Collectors.joining("\n"));
+        return result;
+    }
+
+    public Object getEmailsFromModify(UserData user) {
+        mainPage();
+        startEditUser(user);
+        var home = manager.driver.findElement(By.name("email")).getAttribute("value");
+        var mobile = manager.driver.findElement(By.name("email2")).getAttribute("value");
+        var work = manager.driver.findElement(By.name("email3")).getAttribute("value");
+        var result = Stream.of(home, mobile, work)
+                .filter(s -> s != null && ! "".equals(s))
+                .collect(Collectors.joining("\n"));
+        return result;
+    }
+
+    public Object getAddressFromModify(UserData user) {
+        mainPage();
+        startEditUser(user);
+        var address = manager.driver.findElement(By.name("address")).getAttribute("value");
+        return address;
     }
 }
 

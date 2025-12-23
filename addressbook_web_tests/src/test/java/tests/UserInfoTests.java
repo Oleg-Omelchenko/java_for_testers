@@ -14,7 +14,7 @@ public class UserInfoTests extends TestBase {
         var users = app.hbm().getUserList();
         var rnd = new Random().nextInt(users.size());
         var user = users.get(rnd);
-        var phones = app.users().getPhones(user);
+        var phones = app.users().getPhonesFromMain(user);
         var expected = Stream.of(user.home(), user.mobile(), user.work())
                 .filter(s -> s != null && ! "".equals(s))
                 .collect(Collectors.joining("\n"));
@@ -22,17 +22,34 @@ public class UserInfoTests extends TestBase {
     }
 
     @Test
-    void testEmails() {
-        var users = app.hbm().getUserList();
+    void testEmailsFromSite() {
+        var users = app.users().getUserList();
         var rnd = new Random().nextInt(users.size());
         var user = users.get(rnd);
-        var emails = app.users().getEmails(user);
-        var expected = Stream.of(user.email(), user.email2(), user.email3())
-                .filter(s -> s != null && ! "".equals(s))
-                .collect(Collectors.joining("\n"));
+        var emails = app.users().getEmailsFromMain(user);
+        var expected = app.users().getEmailsFromModify(user);
         Assertions.assertEquals(emails, expected);
     }
 
+    @Test
+    void testPhonesFromSite() {
+        var users = app.users().getUserList();
+        var rnd = new Random().nextInt(users.size());
+        var user = users.get(rnd);
+        var phones = app.users().getPhonesFromMain(user);
+        var expected = app.users().getPhonesFromModify(user);
+        Assertions.assertEquals(phones, expected);
+    }
+
+    @Test
+    void testAddressFromSite() {
+        var users = app.users().getUserList();
+        var rnd = new Random().nextInt(users.size());
+        var user = users.get(rnd);
+        var address = app.users().getAddressFromMain(user);
+        var expected = app.users().getAddressFromModify(user);
+        Assertions.assertEquals(address, expected);
+    }
 
 
 }
