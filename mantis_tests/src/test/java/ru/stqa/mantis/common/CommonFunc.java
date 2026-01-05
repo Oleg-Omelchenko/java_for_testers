@@ -6,15 +6,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CommonFunc {
-    public static String randomString (int n){
+    public static String randomString(int n) {  // String вместо Supplier<String>
         var rnd = new Random();
         Supplier<Integer> randomNumbers = () -> rnd.nextInt(26);
-        var result = Stream.generate(randomNumbers)
+        return Stream.generate(randomNumbers)
                 .limit(n)
-                .map(i -> 'a'+i)
+                .map(i -> 'a' + i)
                 .map(Character::toString)
                 .collect(Collectors.joining());
-        return result;
     }
 
     public static String randomPhone (){

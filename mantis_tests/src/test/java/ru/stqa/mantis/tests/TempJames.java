@@ -7,7 +7,7 @@ import java.io.IOException;
 public class TempJames extends TestBase{
     @Test
     void canCreateUser() throws IOException {
-        app.jamesCli().addUser(String.format("%s@localhost", CommonFunc.randomString(6)), "password");
+        app.jamesCli().addBox(String.format("%s@localhost", CommonFunc.randomString(6)), "password");
     }
 
 

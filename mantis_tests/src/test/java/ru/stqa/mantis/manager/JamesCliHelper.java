@@ -1,14 +1,12 @@
 package ru.stqa.mantis.manager;
 
 
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 public class JamesCliHelper extends HelperBase {
 
@@ -16,7 +14,7 @@ public class JamesCliHelper extends HelperBase {
         super(manager);
     }
 
-    public void addUser(String email, String password) throws IOException {
+    public void addBox(String email, String password) throws IOException {
         // Формируем команду
         String[] command = {"java","-cp","\"james-server-jpa-app.lib/*\"","org.apache.james.cli.ServerCmd","AddUser",email,password};
 
