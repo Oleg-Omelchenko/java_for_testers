@@ -15,20 +15,14 @@ public class JamesCliHelper extends HelperBase {
     }
 
     public void addBox(String email, String password) throws IOException {
-        // Формируем команду
         String[] command = {"java","-cp","\"james-server-jpa-app.lib/*\"","org.apache.james.cli.ServerCmd","AddUser",email,password};
-
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(new File(manager.property("james.workDir")));
-
         DefaultExecutor executor = new DefaultExecutor();
-
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         ByteArrayOutputStream error = new ByteArrayOutputStream();
         executor.setStreamHandler(new PumpStreamHandler(output, error));
-
         Process process = processBuilder.start();
-
         try (java.io.InputStream inputStream = process.getInputStream();
              java.io.InputStream errorStream = process.getErrorStream()) {
             output.write(inputStream.readAllBytes());
@@ -37,7 +31,6 @@ public class JamesCliHelper extends HelperBase {
             System.out.println("Command: " + String.join(" ", command));
             System.out.println("Exit code: " + exitCode);
             System.out.println("Output:\n" + output.toString("UTF-8"));
-
             if (!error.toString("UTF-8").isEmpty()) {
                 System.err.println("Errors:\n" + error.toString("UTF-8"));
             }
