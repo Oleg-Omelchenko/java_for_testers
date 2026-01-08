@@ -19,7 +19,8 @@ public class UserRegistrationTests extends TestBase {
     @MethodSource("singleUser")
     void canRegistrationUser(String username) throws IOException  {
         var email = String.format("%s@localhost", username);
-        app.jamesCli().addBox(email, "password");
+        //app.jamesCli().addBox(email, "password");
+        app.jamesApi().addBox(email, "password");
         app.http().createUserInBrowser(username, email); // заполняем форму и отправляем (браузер)
         var url = app.mail().getUrl(username);// извелекаем ссылку из письма
         app.http().useLink(url);// проходим по ссылке из письма и завершаем регистрацию (браузер)

@@ -14,8 +14,14 @@ public class MailTests extends TestBase {
     }
 
     @Test
+    void canDrainInboxApi() {
+        app.jamesApi().drainApi("user1@localhost","INBOX" );
+    }
+
+
+    @Test
     void canReceiveEmail() {
-        var messages = app.mail().receive("user2@localhost","password", Duration.ofSeconds(60));
+        var messages = app.mail().receive("user1@localhost","password", Duration.ofSeconds(60));
         //Assertions.assertEquals(1, messages.size());
         System.out.println(messages);
     }

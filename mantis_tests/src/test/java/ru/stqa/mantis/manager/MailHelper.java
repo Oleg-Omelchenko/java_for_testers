@@ -79,16 +79,19 @@ public class MailHelper extends HelperBase {
         }
     }
 
-        public String getUrl(String username) {
-            var messages = receive(String.format("%s@localhost", username),"password", Duration.ofSeconds(60));
-            var text = messages.get(0).content();
-            var pattern = Pattern.compile("http://\\S*");
-            var matcher = pattern.matcher(text);
-            if (matcher.find()) {
-                var url = text.substring(matcher.start(), matcher.end());
-                return url;
-            }
-            return null;
+
+
+
+    public String getUrl(String username) {
+        var messages = receive(String.format("%s@localhost", username),"password", Duration.ofSeconds(60));
+        var text = messages.get(0).content();
+        var pattern = Pattern.compile("http://\\S*");
+        var matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            var url = text.substring(matcher.start(), matcher.end());
+            return url;
         }
+        return null;
+    }
 }
 
